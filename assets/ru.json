@@ -1,0 +1,21 @@
+{
+  "fullnameField": "Имя",
+  "emailField": "Адрес электронной почты",
+  "usernameField": "Имя пользователя",
+  "passwordField": "Пароль",
+  "usernameOrEmailField": "Адрес электронной почты или имя пользователя",
+  "signInButton": "Войти",
+  "signUpButton": "Зарегистрироваться",
+  "choosePhoto": "Выбрать фото профиля",
+  "camera": "Камера",
+  "gallery": "Галерея",
+  "removePhoto": "Удалить",
+  "notLoggedIn": "Вы не авторизованы.",
+  "addFloower": "Добавить Floower",
+  "personalInformation": "Личная информация",
+  "settings": "Настройки",
+  "recoverAccountMessage": "Забыли данные для входа?",
+  "recoverAccountButton": "Помощь при входе в систему.",
+  "registerAccountMessage": "Нет учетной записи?",
+  "registerAccountButton": "Зарегистрироваться"
+}

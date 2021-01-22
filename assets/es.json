@@ -1,0 +1,21 @@
+{
+  "fullnameField": "Nombre y apellido",
+  "emailField": "Correo electrónico",
+  "usernameField": "Nombre de usuario",
+  "passwordField": "Contraseña",
+  "usernameOrEmailField": "Correo electrónico o usuario",
+  "signInButton": "Ingresar",
+  "signUpButton": "Registrarse",
+  "choosePhoto": "Elegir foto de perfil",
+  "camera": "Cámara",
+  "gallery": "Galería",
+  "removePhoto": "Quitar",
+  "notLoggedIn": "No tienes un usuario configurado.",
+  "addFloower": "Agregar una Floower",
+  "personalInformation": "Información personal",
+  "settings": "Configuración",
+  "recoverAccountMessage": "¿Olvidaste tus datos de inicio de sesión?",
+  "recoverAccountButton": "Obtén ayuda.",
+  "registerAccountMessage": "¿No tienes una cuenta?",
+  "registerAccountButton": "Regístrate."
+}

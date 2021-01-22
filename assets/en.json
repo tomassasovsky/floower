@@ -1,0 +1,21 @@
+{
+  "fullnameField": "Full Name",
+  "emailField": "Email address",
+  "usernameField": "Username",
+  "passwordField": "Password",
+  "usernameOrEmailField": "Email address or username",
+  "signInButton": "Log In",
+  "signUpButton": "Register",
+  "choosePhoto": "Choose profile photo",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "removePhoto": "Remove",
+  "notLoggedIn": "You are not logged in.",
+  "addFloower": "Add Floower",
+  "personalInformation": "Personal information",
+  "settings": "Settings",
+  "recoverAccountMessage": "Forgotten your login details?",
+  "recoverAccountButton": "Get help with logging in.",
+  "registerAccountMessage": "Don't have an account?",
+  "registerAccountButton": "Sign up."
+}
