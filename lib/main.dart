@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:floower/authentication/signin.dart';
-import 'package:floower/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'authentication/signup.dart';
@@ -13,6 +12,7 @@ var languages = [
   'Español - América Latina',
   'Pусский'
 ];
+
 final StreamController<int> selectedPosition = StreamController<int>();
 int _selectedPosition;
 String ipaddress = "192.168.1.90";
@@ -52,7 +52,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   var startLanguage = await getLanguagePreference();
-  setSelectedPosition(0);
+  setSelectedPosition(100);
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light));
   runApp(
@@ -118,30 +118,22 @@ class _ScreenPickerState extends State<ScreenPicker> {
           if (snapshot.data != null && snapshot.data != '') {
             _selectedPosition = snapshot.data;
             switch (snapshot.data) {
-              case 0:
+              case 100:
                 return SigninPage();
-              case 1:
-                return SigninPage();
-              case 2:
-                return SignupPage();
-              case 3:
-                return ProfilePage();
-              case 4:
-                return ProfilePage();
-              // case 6:
+                break;
+              case 6:
                 return SignupPage();
             }
           }
           return Center(
-            child: Container(
-              height: MediaQuery.of(context).size.width * 0.2,
-              width: MediaQuery.of(context).size.width * 0.2,
-              child: CircularProgressIndicator.adaptive()
-            )
-          );
+              child: Container(
+                  height: MediaQuery.of(context).size.width * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  child: CircularProgressIndicator.adaptive()));
         });
   }
 
+  // ignore: unused_element
   _fab() {
     if (_selectedPosition != 1 && _selectedPosition != 0)
       return FloatingActionButton(
@@ -162,7 +154,7 @@ class _ScreenPickerState extends State<ScreenPicker> {
   }
 
   _buildBottomTab() {
-    if (_selectedPosition != 1)
+    if (_selectedPosition != 100)
       return Container(
         height: MediaQuery.of(context).size.height * 0.06,
         child: BottomAppBar(
@@ -232,10 +224,11 @@ class _ScreenPickerState extends State<ScreenPicker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _appBar(),
-        bottomNavigationBar: _buildBottomTab(),
-        body: _currentScreen(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: _fab());
+      appBar: _appBar(),
+      bottomNavigationBar: _buildBottomTab(),
+      body: _currentScreen(),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: _fab()
+    );
   }
 }

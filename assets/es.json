@@ -17,5 +17,10 @@
   "recoverAccountMessage": "¿Olvidaste tus datos de inicio de sesión?",
   "recoverAccountButton": "Obtén ayuda.",
   "registerAccountMessage": "¿No tienes una cuenta?",
-  "registerAccountButton": "Regístrate."
+  "registerAccountButton": "Regístrate.",
+  "errorNameLength": "Este campo no puede estar vacío.",
+  "errorEmail": "Ingresa una dirección de correo válida.",
+  "errorUsername": "Nombre de usuario inválido.",
+  "errorEmailOrUsername": "Ingrese una dirección de correo o nombre de usuario.",
+  "errorPassword": "La contraseña debe contener por lo menos 8 caracteres."
 }

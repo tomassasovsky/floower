@@ -17,5 +17,10 @@
   "recoverAccountMessage": "Forgotten your login details?",
   "recoverAccountButton": "Get help with logging in.",
   "registerAccountMessage": "Don't have an account?",
-  "registerAccountButton": "Sign up."
+  "registerAccountButton": "Sign up.",
+  "errorNameLength": "Name field cannot be empty.",
+  "errorEmail": "Please input a valid email address.",
+  "errorUsername": "Invalid Username.",
+  "errorEmailOrUsername": "Please input a valid email address or username.",
+  "errorPassword": "Password must contain at least 8 characters."
 }
