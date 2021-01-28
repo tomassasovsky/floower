@@ -27,32 +27,16 @@ class _SigninPageState extends State<SigninPage> {
 
   _checkForErrors() {
     var _checkPreErrors = [];
-    if (!RegExp(r'^[a-zA-Z][a-zA-Z\d-_\.]+$').hasMatch(username)) {
+    if (username.length < 1) {
       _checkPreErrors.add(tr('errorUsername'));
     }
-    if (password.length < 8) {
+    if (password.length < 1) {
       _checkPreErrors.add(tr('errorPassword'));
     }
     return _checkPreErrors.isEmpty;
   }
 
-  _checkForErrorsSubmit() {
-    setState(() {
-      if (!RegExp(r'^[a-zA-Z][a-zA-Z\d-_\.]+$').hasMatch(username)) {
-        usernameError = true;
-      } else {
-        usernameError = false;
-      }
-      if (password.length < 8) {
-        passwordError = true;
-      } else {
-        passwordError = false;
-      }
-    });
-  }
-
   _submit() {
-    _checkForErrorsSubmit();
     if (usernameError || passwordError) return false;
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
@@ -61,70 +45,20 @@ class _SigninPageState extends State<SigninPage> {
     return false;
   }
 
-  _buildErrors() {
-    return GestureDetector(
-      child: Column(children: [
-        usernameError
-            ? ListTile(
-                leading: Icon(Icons.error_outline, color: Colors.red),
-                title: Text(tr('errorUsername'),
-                    style: TextStyle(color: Colors.red)))
-            : SizedBox(height: 0, width: 0),
-        passwordError
-            ? ListTile(
-                leading: Icon(Icons.error_outline, color: Colors.red),
-                title: Text(tr('errorPassword'),
-                    style: TextStyle(color: Colors.red)))
-            : SizedBox(height: 0, width: 0),
-      ]),
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-    );
-  }
-
-  _buildSignUpPage() {
-    return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: DropdownButton(
-            dropdownColor: Colors.blueGrey[900],
-            style: TextStyle(color: Colors.white),
-            underline: Container(
-              height: 0.6,
-              color: Colors.white,
-            ),
-            items: [
-              DropdownMenuItem(value: Locale('en'), child: Text(languages[0])),
-              DropdownMenuItem(value: Locale('es'), child: Text(languages[1])),
-              DropdownMenuItem(value: Locale('ru'), child: Text(languages[2])),
-            ],
-            onChanged: (v) => setState(() {
-              context.locale = v;
-              setLanguagePreference(v.toString());
-            }),
-            value: context.locale,
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        body: SignupPage());
-  }
-
   @override
   Widget build(_context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: DropdownButton(
-          dropdownColor: Colors.blueGrey[900],
-          style: TextStyle(color: Colors.white),
+          onTap: () {
+            setState(() {});
+          },
+          dropdownColor: Theme.of(context).cardColor,
+          style: TextStyle(color: Theme.of(context).textTheme.headline1.color),
           underline: Container(
             height: 0.6,
-            color: Colors.white,
+            color: Theme.of(context).textTheme.headline1.color,
           ),
           items: [
             DropdownMenuItem(value: Locale('en'), child: Text(languages[0])),
@@ -164,7 +98,7 @@ class _SigninPageState extends State<SigninPage> {
                       setState(() {
                         Navigator.of(context)
                             .push(CupertinoPageRoute(builder: (_) {
-                          return _buildSignUpPage();
+                          return SignupPage();
                         }));
                       });
                     },
@@ -181,7 +115,7 @@ class _SigninPageState extends State<SigninPage> {
           child: Form(
             key: formKey,
             child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -189,7 +123,7 @@ class _SigninPageState extends State<SigninPage> {
                       style: TextStyle(
                           fontFamily: "NotoSerifSC",
                           fontSize: 40.0,
-                          color: Colors.white,
+                          color: Theme.of(context).textTheme.headline1.color,
                           fontWeight: FontWeight.w100,
                           letterSpacing: 3.0)),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -197,17 +131,17 @@ class _SigninPageState extends State<SigninPage> {
                     width: MediaQuery.of(context).size.width * 0.8783,
                     height: MediaQuery.of(context).size.height * 0.065,
                     child: TextField(
-                      cursorColor: Colors.white,
+                      cursorColor: Theme.of(context).accentColor,
                       cursorWidth: 0.5,
                       decoration: InputDecoration(
-                        fillColor: Colors.grey[800],
+                        fillColor:
+                            Theme.of(context).textSelectionTheme.selectionColor,
                         filled: true,
                         hintText: tr("usernameOrEmailField"),
                         hintStyle: TextStyle(
                             backgroundColor: Colors.transparent,
-                            color: Colors.white60,
+                            color: Theme.of(context).hintColor,
                             fontSize: 14),
-                        alignLabelWithHint: false,
                         border: OutlineInputBorder(
                           borderSide:
                               BorderSide(color: Colors.grey[800], width: 0),
@@ -243,14 +177,14 @@ class _SigninPageState extends State<SigninPage> {
                       cursorColor: Colors.white,
                       cursorWidth: 0.5,
                       decoration: InputDecoration(
-                        fillColor: Colors.grey[800],
+                        fillColor:
+                            Theme.of(context).textSelectionTheme.selectionColor,
                         filled: true,
                         hintText: tr("passwordField"),
                         hintStyle: TextStyle(
                             backgroundColor: Colors.transparent,
-                            color: Colors.white60,
+                            color: Theme.of(context).hintColor,
                             fontSize: 14),
-                        alignLabelWithHint: false,
                         border: OutlineInputBorder(
                           borderSide:
                               BorderSide(color: Colors.grey[800], width: 0),
@@ -287,17 +221,21 @@ class _SigninPageState extends State<SigninPage> {
                     child: RaisedButton(
                       color: _checkForErrors()
                           ? Colors.blue[700]
-                          : Color(0xff003480),
-                      textColor: _checkForErrors() ? Colors.white : Colors.grey,
+                          : Theme.of(context).buttonColor,
+                      textColor: _checkForErrors()
+                          ? Colors.white
+                          : Theme.of(context).hintColor,
                       splashColor: _checkForErrors()
                           ? Theme.of(context).splashColor
-                          : Colors.red,
+                          : Colors.transparent,
                       highlightColor: _checkForErrors()
                           ? Theme.of(context).splashColor
-                          : Colors.red,
+                          : Colors.transparent,
                       child: Text(tr("signInButton"),
                           style: TextStyle(fontFamily: "NotoSerifSC"),
                           textScaleFactor: 1.2),
+                      elevation: 0,
+                      highlightElevation: 0,
                       onPressed: () {
                         FocusScope.of(context).unfocus();
                         if (_submit()) {
@@ -307,7 +245,6 @@ class _SigninPageState extends State<SigninPage> {
                       },
                     ),
                   ),
-                  _buildErrors(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

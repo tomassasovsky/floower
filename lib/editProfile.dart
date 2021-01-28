@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +12,6 @@ Future<String> getUserPreference() async {
   resBody["email"] = preferences.getString("email");
   return json.encode(resBody);
 }
-
 class EditProfile extends StatefulWidget {
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -108,8 +108,15 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Edit Account Information"), actions: [
-          IconButton(
+        appBar: AppBar(
+          title: Text(tr('editAccountInformation')),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
               icon: Icon(Icons.check),
               onPressed: () {
                 _submit();
@@ -119,8 +126,10 @@ class _EditProfileState extends State<EditProfile> {
                   currentFocus.unfocus();
                 }
                 Navigator.pop(context);
-              })
-        ]),
+              }
+            )
+          ]
+        ),
         body: builder());
   }
   _submit() {

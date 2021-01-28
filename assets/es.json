@@ -22,5 +22,6 @@
   "errorEmail": "Ingresa una dirección de correo válida.",
   "errorUsername": "Nombre de usuario inválido.",
   "errorEmailOrUsername": "Ingrese una dirección de correo o nombre de usuario.",
-  "errorPassword": "La contraseña debe contener por lo menos 8 caracteres."
+  "errorPassword": "La contraseña debe contener por lo menos 8 caracteres.",
+  "editAccountInformation": "Información Personal"
 }

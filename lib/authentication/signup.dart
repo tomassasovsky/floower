@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:floower/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,7 @@ class _SignupPageState extends State<SignupPage> {
     preferences.setString("email", jEmail);
     preferences.setString("username", jUsername);
     preferences.setString("password", jPassword);
+    preferences.setBool("isLoggedIn", true);
   }
 
   _checkForErrors() {
@@ -122,219 +124,262 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Center(
-        child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('floower',
-                        style: TextStyle(
-                            letterSpacing: 3.0,
-                            fontFamily: "NotoSerifSC",
-                            fontSize: 40.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w100)),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8783,
-                      height: MediaQuery.of(context).size.height * 0.065,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        cursorWidth: 0.5,
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey[800],
-                          filled: true,
-                          hintText: tr('fullnameField'),
-                          hintStyle: TextStyle(
-                              backgroundColor: Colors.transparent,
-                              color: Colors.white60,
-                              fontSize: 14),
-                          alignLabelWithHint: true,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                        ),
-                        onChanged: (input) {
-                          setState(() {
-                            fullname = input;
-                          });
-                        },
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-                    Divider(
-                        color: Colors.transparent,
-                        height: MediaQuery.of(context).size.height * 0.012),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8783,
-                      height: MediaQuery.of(context).size.height * 0.065,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        cursorWidth: 0.5,
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey[800],
-                          filled: true,
-                          hintText: tr('emailField'),
-                          hintStyle: TextStyle(
-                              backgroundColor: Colors.transparent,
-                              color: Colors.white60,
-                              fontSize: 14),
-                          alignLabelWithHint: false,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                        ),
-                        onChanged: (input) {
-                          setState(() {
-                            email = input;
-                          });
-                        },
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                    ),
-                    Divider(
-                        color: Colors.transparent,
-                        height: MediaQuery.of(context).size.height * 0.012),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8783,
-                      height: MediaQuery.of(context).size.height * 0.065,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        cursorWidth: 0.5,
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey[800],
-                          filled: true,
-                          hintText: tr('usernameField'),
-                          hintStyle: TextStyle(
-                              backgroundColor: Colors.transparent,
-                              color: Colors.white60,
-                              fontSize: 14),
-                          alignLabelWithHint: false,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: DropdownButton(
+            dropdownColor: Theme.of(context).cardColor,
+            style:
+                TextStyle(color: Theme.of(context).textTheme.headline1.color),
+            underline: Container(
+              height: 0.6,
+              color: Theme.of(context).textTheme.headline1.color,
+            ),
+            items: [
+              DropdownMenuItem(value: Locale('en'), child: Text(languages[0])),
+              DropdownMenuItem(value: Locale('es'), child: Text(languages[1])),
+              DropdownMenuItem(value: Locale('ru'), child: Text(languages[2])),
+            ],
+            onChanged: (v) => setState(() {
+              context.locale = v;
+              setLanguagePreference(v.toString());
+            }),
+            value: context.locale,
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: GestureDetector(
+          child: Center(
+            child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('floower',
+                            style: TextStyle(
+                                letterSpacing: 3.0,
+                                fontFamily: "NotoSerifSC",
+                                fontSize: 40.0,
+                                color:
+                                    Theme.of(context).textTheme.headline1.color,
+                                fontWeight: FontWeight.w100)),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.01),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.8783,
+                          height: MediaQuery.of(context).size.height * 0.065,
+                          child: TextField(
+                            cursorColor: Theme.of(context).accentColor,
+                            cursorWidth: 0.5,
+                            decoration: InputDecoration(
+                              fillColor: Theme.of(context)
+                                  .textSelectionTheme
+                                  .selectionColor,
+                              filled: true,
+                              hintText: tr('fullnameField'),
+                              hintStyle: TextStyle(
+                                  backgroundColor: Colors.transparent,
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 14),
+                              alignLabelWithHint: true,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                            ),
+                            onChanged: (input) {
+                              setState(() {
+                                fullname = input;
+                              });
+                            },
+                            keyboardType: TextInputType.text,
                           ),
                         ),
-                        onChanged: (input) {
-                          setState(() {
-                            username = input;
-                          });
-                        },
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-                    Divider(
-                        color: Colors.transparent,
-                        height: MediaQuery.of(context).size.height * 0.012),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8783,
-                      height: MediaQuery.of(context).size.height * 0.065,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        cursorWidth: 0.5,
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey[800],
-                          filled: true,
-                          hintText: tr('passwordField'),
-                          hintStyle: TextStyle(
-                              backgroundColor: Colors.transparent,
-                              color: Colors.white60,
-                              fontSize: 14),
-                          alignLabelWithHint: false,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 0),
+                        Divider(
+                            color: Colors.transparent,
+                            height: MediaQuery.of(context).size.height * 0.012),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.8783,
+                          height: MediaQuery.of(context).size.height * 0.065,
+                          child: TextField(
+                            cursorColor: Theme.of(context).accentColor,
+                            cursorWidth: 0.5,
+                            decoration: InputDecoration(
+                              fillColor: Theme.of(context)
+                                  .textSelectionTheme
+                                  .selectionColor,
+                              filled: true,
+                              hintText: tr('emailField'),
+                              hintStyle: TextStyle(
+                                  backgroundColor: Colors.transparent,
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 14),
+                              alignLabelWithHint: false,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                            ),
+                            onChanged: (input) {
+                              setState(() {
+                                email = input;
+                              });
+                            },
+                            keyboardType: TextInputType.emailAddress,
                           ),
                         ),
-                        onChanged: (input) {
-                          setState(() {
-                            password = input;
-                          });
-                        },
-                        obscureText: true,
-                        keyboardType: TextInputType.visiblePassword,
-                      ),
-                    ),
-                    Divider(
-                        color: Colors.transparent,
-                        height: MediaQuery.of(context).size.height * 0.012),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8783,
-                      height: MediaQuery.of(context).size.height * 0.055,
-                      // ignore: deprecated_member_use
-                      child: RaisedButton(
-                        color: _checkForErrors()
-                            ? Colors.blue[700]
-                            : Color(0xff003480),
-                        textColor:
-                            _checkForErrors() ? Colors.white : Colors.grey,
-                        splashColor: _checkForErrors()
-                            ? Theme.of(context).splashColor
-                            : Colors.red,
-                        highlightColor: _checkForErrors()
-                            ? Theme.of(context).splashColor
-                            : Colors.red,
-                        child: Text(tr('signUpButton'),
-                            style: TextStyle(fontFamily: "NotoSerifSC"),
-                            textScaleFactor: 1.2),
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          if (_submit()) {
-                            _saveUserPreferences(
-                                fullname, email, username, password);
-                          }
-                        },
-                      ),
-                    ),
-                    _buildErrors(),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                  ]),
-            )),
-      ),
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-    );
+                        Divider(
+                            color: Colors.transparent,
+                            height: MediaQuery.of(context).size.height * 0.012),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.8783,
+                          height: MediaQuery.of(context).size.height * 0.065,
+                          child: TextField(
+                            cursorColor: Theme.of(context).accentColor,
+                            cursorWidth: 0.5,
+                            decoration: InputDecoration(
+                              fillColor: Theme.of(context)
+                                  .textSelectionTheme
+                                  .selectionColor,
+                              filled: true,
+                              hintText: tr('usernameField'),
+                              hintStyle: TextStyle(
+                                  backgroundColor: Colors.transparent,
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 14),
+                              alignLabelWithHint: false,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                            ),
+                            onChanged: (input) {
+                              setState(() {
+                                username = input;
+                              });
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                        ),
+                        Divider(
+                            color: Colors.transparent,
+                            height: MediaQuery.of(context).size.height * 0.012),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.8783,
+                          height: MediaQuery.of(context).size.height * 0.065,
+                          child: TextField(
+                            cursorColor: Theme.of(context).accentColor,
+                            cursorWidth: 0.5,
+                            decoration: InputDecoration(
+                              fillColor: Theme.of(context)
+                                  .textSelectionTheme
+                                  .selectionColor,
+                              filled: true,
+                              hintText: tr('passwordField'),
+                              hintStyle: TextStyle(
+                                  backgroundColor: Colors.transparent,
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 14),
+                              alignLabelWithHint: false,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 0),
+                              ),
+                            ),
+                            onChanged: (input) {
+                              setState(() {
+                                password = input;
+                              });
+                            },
+                            obscureText: true,
+                            keyboardType: TextInputType.visiblePassword,
+                          ),
+                        ),
+                        Divider(
+                            color: Colors.transparent,
+                            height: MediaQuery.of(context).size.height * 0.012),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.8783,
+                          height: MediaQuery.of(context).size.height * 0.055,
+                          // ignore: deprecated_member_use
+                          child: RaisedButton(
+                            color: _checkForErrors()
+                                ? Colors.blue[700]
+                                : Theme.of(context).buttonColor,
+                            textColor: _checkForErrors()
+                                ? Colors.white
+                                : Theme.of(context).hintColor,
+                            splashColor: _checkForErrors()
+                                ? Theme.of(context).splashColor
+                                : Colors.transparent,
+                            highlightColor: _checkForErrors()
+                                ? Theme.of(context).splashColor
+                                : Colors.transparent,
+                            child: Text(tr('signUpButton'),
+                                style: TextStyle(fontFamily: "NotoSerifSC"),
+                                textScaleFactor: 1.2),
+                            elevation: 0,
+                            highlightElevation: 0,
+                            onPressed: () {
+                              FocusScope.of(context).unfocus();
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              if (_submit()) {
+                                _saveUserPreferences(
+                                    fullname, email, username, password);
+                                setSelectedPosition(0);
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
+                        ),
+                        _buildErrors(),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1),
+                      ]),
+                )),
+          ),
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+        ));
   }
 }

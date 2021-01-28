@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:floower/editProfile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -34,6 +34,11 @@ class _ProfilePageState extends State<ProfilePage> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     imagePathStream.sink.add(dir);
     return preferences.setString("profileImage", dir);
+  }
+
+  clearAllSavedData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.clear();
   }
 
   final StreamController<String> imagePathStream = StreamController<String>();
@@ -71,60 +76,62 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     }
 
+    _photoOptions() {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextButton.icon(
+              icon: Icon(Icons.camera, color: Colors.black),
+              onPressed: () {
+                takePhoto(ImageSource.camera)
+                    .then((value) => Navigator.pop(context));
+              },
+              label: Text(tr('camera'), style: TextStyle(color: Colors.black)),
+            ),
+            TextButton.icon(
+              icon: Icon(Icons.image, color: Colors.black),
+              onPressed: () {
+                takePhoto(ImageSource.gallery)
+                    .then((value) => Navigator.pop(context));
+              },
+              label: Text(tr('gallery'), style: TextStyle(color: Colors.black)),
+            ),
+            if (filePath != null && filePath != "notSet")
+              TextButton.icon(
+                icon: Icon(Icons.delete, color: Colors.black),
+                onPressed: () {
+                  savePhotoDirPreference("notSet").then(
+                      (value) => {Navigator.pop(context), filePath = "notSet"});
+                },
+                label: Text(tr('removePhoto'),
+                    style: TextStyle(color: Colors.black)),
+              )
+          ]);
+    }
+
     bottomSheet() {
       return Container(
         height: MediaQuery.of(context).size.height * 0.2,
         color: Colors.transparent,
         child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.only(
-                    topLeft: const Radius.circular(20.0),
-                    topRight: const Radius.circular(20.0))),
-            child: Center(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      tr('choosePhoto'),
-                      style: TextStyle(fontSize: 20.0, color: Colors.black),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        TextButton.icon(
-                          icon: Icon(Icons.camera, color: Colors.black),
-                          onPressed: () {
-                            takePhoto(ImageSource.camera)
-                                .then((value) => Navigator.pop(context));
-                          },
-                          label: Text(tr('camera'),
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                        TextButton.icon(
-                          icon: Icon(Icons.image, color: Colors.black),
-                          onPressed: () {
-                            takePhoto(ImageSource.gallery)
-                                .then((value) => Navigator.pop(context));
-                          },
-                          label: Text(tr('gallery'),
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                        TextButton.icon(
-                          icon: Icon(Icons.delete, color: Colors.black),
-                          onPressed: () {
-                            savePhotoDirPreference("")
-                                .then((value) => Navigator.pop(context));
-                          },
-                          label: Text(tr('removePhoto'),
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ],
-                    ),
-                  ]),
-            )),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.only(
+                  topLeft: const Radius.circular(20.0),
+                  topRight: const Radius.circular(20.0))),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  tr('choosePhoto'),
+                  style: TextStyle(fontSize: 20.0, color: Colors.black),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                _photoOptions(),
+              ]),
+        ),
       );
     }
 
@@ -136,10 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
               var json = jsonDecode(snapshot.data);
               if (json["fullname"] != null)
                 return Text(json["fullname"],
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 25,
-                      color: Color(0xffecebf0)));
+                    style: Theme.of(context).textTheme.headline2);
             }
             return Text(tr('notLoggedIn'));
           });
@@ -153,11 +157,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 snapshot.hasData) {
               var json = jsonDecode(snapshot.data);
               if (json["fullname"] != null && json["email"] != null)
-              return Text(json["username"] + "   -   " + json["email"],
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300, color: Color(0xffecebf0)));
+                return Text(json["username"] + "   -   " + json["email"],
+                    style: Theme.of(context).textTheme.headline3);
             }
-            return Text("");
+            return SizedBox.shrink();
           });
     }
 
@@ -165,36 +168,22 @@ class _ProfilePageState extends State<ProfilePage> {
       return StreamBuilder(
           stream: imagePathStream.stream,
           builder: (context, snapshot) {
-              if (snapshot.data != null && snapshot.data != '') {
-                log(snapshot.data);
-                filePath = snapshot.data;
-                return GestureDetector(
-                  child: CircleAvatar(
-                    radius: 80,
-                    backgroundImage: FileImage(File(filePath)),
-                  ),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: ((builder) => bottomSheet()),
-                    );
-                  },
+            bool isSet = (snapshot.data != null && snapshot.data != 'notSet');
+            if (isSet) filePath = snapshot.data;
+            return GestureDetector(
+              child: CircleAvatar(
+                backgroundColor: Theme.of(context).highlightColor,
+                radius: 50,
+                backgroundImage: isSet ? FileImage(File(filePath)) : null,
+                child: Icon(Icons.person, size: 50, color: isSet ? Colors.transparent : Theme.of(context).iconTheme.color),
+              ),
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: ((builder) => bottomSheet()),
                 );
-              } else {
-                return GestureDetector(
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 80,
-                    child: Icon(Icons.person, size: 80),
-                  ),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: ((builder) => bottomSheet()),
-                    );
-                  },
-                );
-              }
+              },
+            );
           }
       );
     }
@@ -210,15 +199,20 @@ class _ProfilePageState extends State<ProfilePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(35.0),
               ),
-              color: Color(0xff201f25),
+              color: Theme.of(context).cardColor,
               child: Column(
-                children: <Widget>[
-                  SizedBox(height: 15),
-                  _profileImage(),
-                  SizedBox(height: 10),
-                  _userFullName(),
-                  SizedBox(height: 5),
-                  _userName(),
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    children: [
+                      _profileImage(),
+                    ],
+                  ),
+                  Column(children: [
+                    _userFullName(),
+                    SizedBox(height: 5),
+                    _userName(),
+                  ]),
                 ],
               ),
             ),
@@ -228,31 +222,30 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               ListTile(
                 leading: Icon(IconData(0xe900, fontFamily: 'flower'),
-                    color: Color(0xffecebf0)),
+                    color: Theme.of(context).iconTheme.color),
                 title: Text(tr('addFloower'),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300, color: Color(0xffecebf0))),
+                    style: Theme.of(context).textTheme.headline1),
                 onTap: () {},
               ),
               Divider(thickness: 0.3, height: 0.3, color: Color(0xff242424)),
               ListTile(
-                leading: Icon(Icons.person, color: Color(0xffecebf0)),
+                leading: Icon(Icons.person,
+                    color: Theme.of(context).iconTheme.color),
                 title: Text(tr('personalInformation'),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300, color: Color(0xffecebf0))),
+                    style: Theme.of(context).textTheme.headline1),
                 onTap: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => EditProfile()));
+                      .push(CupertinoPageRoute(builder: (_) => EditProfile()));
                 },
               ),
               Divider(thickness: 0.3, height: 0.3, color: Color(0xff242424)),
               ListTile(
-                leading: Icon(Icons.settings, color: Color(0xffecebf0)),
-                title: Text(tr('settings'),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300, color: Color(0xffecebf0))),
+                leading: Icon(Icons.remove,
+                    color: Theme.of(context).iconTheme.color),
+                title: Text("Delete all saved information",
+                    style: Theme.of(context).textTheme.headline1),
                 onTap: () {
-                  _profileImage();
+                  clearAllSavedData();
                 },
               ),
             ],
