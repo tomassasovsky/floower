@@ -76,9 +76,9 @@ flutter:
     - family: flower
       fonts:
         - asset: icons/icomoon.ttf
-    - family: new
+    - family: splashIcon
       fonts:
-        - asset: icons/new.ttf
+        - asset: icons/splashIcon.ttf
     - family: NotoSerifSC
       fonts:
         - asset: icons/NotoSerifSC-ExtraLight.otf

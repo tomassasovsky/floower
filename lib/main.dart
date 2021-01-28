@@ -1,3 +1,4 @@
+import 'package:floower/splashScreen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -66,13 +67,9 @@ Future isUserLoggedIn() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   Locale startLanguage = await getLanguagePreference();
-  bool isLoggedIn = await isUserLoggedIn();
-  if (isLoggedIn != null && isLoggedIn)
-    setSelectedPosition(0);
-  else
-    setSelectedPosition(100);
+  setSelectedPosition(1000);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light));
   runApp(
@@ -174,11 +171,14 @@ class _ScreenPickerState extends State<ScreenPicker> {
   _currentScreen() {
     return StreamBuilder(
         stream: selectedPosition.stream,
-        initialData: 100,
+        initialData: 1000,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data != '') {
             _selectedPosition = snapshot.data;
             switch (snapshot.data) {
+              case 1000:
+                isAppBarVisible.sink.add(false);
+                return SplashScreen();
               case 100:
                 isAppBarVisible.sink.add(false);
                 return SigninPage();
@@ -197,14 +197,8 @@ class _ScreenPickerState extends State<ScreenPicker> {
           }
           return Center(
               child: Container(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.2,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.2,
+                  height: MediaQuery.of(context).size.width * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.2,
                   child: CircularProgressIndicator.adaptive()));
         });
   }
@@ -223,10 +217,10 @@ class _ScreenPickerState extends State<ScreenPicker> {
                 children: <Widget>[
                   TabItemIcon(
                     icon: Icon(Icons.palette,
-                      color:
-                      _selectedPosition == 0 ? Colors.white : Colors.white54,
-                      size: MediaQuery.of(context).size.height * 0.035
-                    ),
+                        color: _selectedPosition == 0
+                            ? Colors.white
+                            : Colors.white54,
+                        size: MediaQuery.of(context).size.height * 0.035),
                     isSelected: _selectedPosition == 0,
                     onTap: () async {
                       setState(() {
@@ -240,17 +234,9 @@ class _ScreenPickerState extends State<ScreenPicker> {
                     onTap: () {
                       setState(() {
                         print('height: ' +
-                            MediaQuery
-                                .of(context)
-                                .size
-                                .height
-                                .toString());
-                        print(
-                            'width: ' + MediaQuery
-                                .of(context)
-                                .size
-                                .width
-                                .toString());
+                            MediaQuery.of(context).size.height.toString());
+                        print('width: ' +
+                            MediaQuery.of(context).size.width.toString());
                         _setSelectedPosition(1);
                       });
                     },
@@ -277,9 +263,8 @@ class _ScreenPickerState extends State<ScreenPicker> {
               ),
             );
           }
-          return SizedBox(width: 0, height: 0);
-        }
-    );
+          return SizedBox.shrink();
+        });
   }
 
   _appBar() {
@@ -291,23 +276,43 @@ class _ScreenPickerState extends State<ScreenPicker> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButton(
-              dropdownColor: Theme.of(context).cardColor,
-              underline: SizedBox(),
-              icon: Icon(
-                Icons.public_outlined,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              onTap: () => setState(() {}),
-              onChanged: (language) => setState(() {
-                context.locale = language;
-                setLanguagePreference(language.toString());
-              }),
-              items: [
-                DropdownMenuItem(value: Locale('en'), child: Text(languages[0], style: TextStyle(color: Theme.of(context).textTheme.headline1.color))),
-                DropdownMenuItem(value: Locale('es'), child: Text(languages[1], style: TextStyle(color: Theme.of(context).textTheme.headline1.color))),
-                DropdownMenuItem(value: Locale('ru'), child: Text(languages[2], style: TextStyle(color: Theme.of(context).textTheme.headline1.color))),
-              ]
-            ),
+                dropdownColor: Theme.of(context).cardColor,
+                underline: SizedBox(),
+                icon: Icon(
+                  Icons.public_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                onTap: () => setState(() {}),
+                onChanged: (language) => setState(() {
+                      context.locale = language;
+                      setLanguagePreference(language.toString());
+                    }),
+                items: [
+                  DropdownMenuItem(
+                      value: Locale('en'),
+                      child: Text(languages[0],
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  .color))),
+                  DropdownMenuItem(
+                      value: Locale('es'),
+                      child: Text(languages[1],
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  .color))),
+                  DropdownMenuItem(
+                      value: Locale('ru'),
+                      child: Text(languages[2],
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  .color))),
+                ]),
           ),
         ],
       );

@@ -95,25 +95,25 @@ class _SignupPageState extends State<SignupPage> {
                 leading: Icon(Icons.error_outline, color: Colors.red),
                 title: Text(tr('errorNameLength'),
                     style: TextStyle(color: Colors.red)))
-            : SizedBox(height: 0, width: 0),
+            : SizedBox.shrink(),
         errors[1]
             ? ListTile(
                 leading: Icon(Icons.error_outline, color: Colors.red),
                 title:
                     Text(tr('errorEmail'), style: TextStyle(color: Colors.red)))
-            : SizedBox(height: 0, width: 0),
+            : SizedBox.shrink(),
         errors[2]
             ? ListTile(
                 leading: Icon(Icons.error_outline, color: Colors.red),
                 title: Text(tr('errorUsername'),
                     style: TextStyle(color: Colors.red)))
-            : SizedBox(height: 0, width: 0),
+            : SizedBox.shrink(),
         errors[3]
             ? ListTile(
                 leading: Icon(Icons.error_outline, color: Colors.red),
                 title: Text(tr('errorPassword'),
                     style: TextStyle(color: Colors.red)))
-            : SizedBox(height: 0, width: 0),
+            : SizedBox.shrink(),
       ]),
       onTap: () {
         FocusScope.of(context).unfocus();

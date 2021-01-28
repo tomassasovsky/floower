@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:floower/editProfile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path/path.dart' as path;
 
 Future<String> getUserPreference() async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -18,8 +21,8 @@ Future<String> getUserPreference() async {
 }
 
 class ProfilePage extends StatefulWidget {
-  final path;
-  ProfilePage({Key key, this.path}) : super(key: key);
+  final cPath;
+  ProfilePage({Key key, this.cPath}) : super(key: key);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -66,13 +69,20 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(context) {
     takePhoto(ImageSource source) async {
+      final appDir = await getApplicationDocumentsDirectory();
+      final appPath = appDir.path;
       final pickedFile = await _picker.getImage(
         source: source,
       );
+      if (pickedFile == null) return;
+
+      File tmpFile = File(pickedFile.path);
+      String fileName = path.basename(pickedFile.path);
+      tmpFile = await tmpFile.copy('$appPath/$fileName');
       setState(() {
-        filePath = pickedFile.path;
+        filePath = tmpFile.path;
         savePhotoDirPreference(filePath).then((value) => print(value));
-        print(filePath);
+        log(filePath);
       });
     }
 
@@ -160,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 return Text(json["username"] + "   -   " + json["email"],
                     style: Theme.of(context).textTheme.headline3);
             }
-            return SizedBox.shrink();
+            return Text("");
           });
     }
 
@@ -173,9 +183,13 @@ class _ProfilePageState extends State<ProfilePage> {
             return GestureDetector(
               child: CircleAvatar(
                 backgroundColor: Theme.of(context).highlightColor,
-                radius: 50,
+                radius: 55,
                 backgroundImage: isSet ? FileImage(File(filePath)) : null,
-                child: Icon(Icons.person, size: 50, color: isSet ? Colors.transparent : Theme.of(context).iconTheme.color),
+                child: Icon(Icons.person,
+                    size: 55,
+                    color: isSet
+                        ? Colors.transparent
+                        : Theme.of(context).iconTheme.color),
               ),
               onTap: () {
                 showModalBottomSheet(
@@ -184,8 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               },
             );
-          }
-      );
+          });
     }
 
     return Center(
@@ -194,14 +207,15 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width * 0.95,
-            height: MediaQuery.of(context).size.height * 0.34,
+            height: MediaQuery.of(context).size.height * 0.32,
             child: Card(
+              elevation: 10,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(35.0),
               ),
               color: Theme.of(context).cardColor,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
                     children: [
@@ -210,14 +224,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Column(children: [
                     _userFullName(),
-                    SizedBox(height: 5),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                     _userName(),
                   ]),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Column(
             children: <Widget>[
               ListTile(

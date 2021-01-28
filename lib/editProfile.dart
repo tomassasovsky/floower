@@ -64,7 +64,7 @@ class _EditProfileState extends State<EditProfile> {
                     controller: emailTEC,
                     keyboardType: TextInputType.text,
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Text("Name"),
                   TextFormField(
                     cursorColor: Colors.white,
@@ -81,7 +81,7 @@ class _EditProfileState extends State<EditProfile> {
                     controller: nameTEC,
                     keyboardType: TextInputType.text,
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Text("Username"),
                   TextFormField(
                     cursorColor: Colors.white,
