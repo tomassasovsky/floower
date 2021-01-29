@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:floower/editProfile.dart';
+import 'package:floower/pages/editProfile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -224,7 +225,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Column(children: [
                     _userFullName(),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.005),
                     _userName(),
                   ]),
                 ],

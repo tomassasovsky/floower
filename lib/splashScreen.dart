@@ -44,7 +44,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Icon(IconData(0xe900, fontFamily: 'splashIcon'), size: MediaQuery.of(context).size.height * 0.15)
+                      Icon(IconData(0xe900, fontFamily: 'splashIcon'),
+                          size: MediaQuery.of(context).size.height * 0.15)
                     ],
                   ),
                 ),

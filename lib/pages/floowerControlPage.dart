@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'colorPicker.dart';
+import '../classes/colorPicker.dart';
 
 class FloowerControlPage extends StatefulWidget {
   @override

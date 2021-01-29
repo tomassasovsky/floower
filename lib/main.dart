@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:floower/authentication/signin.dart';
-import 'package:floower/floowerControlPage.dart';
-import 'package:floower/profilePage.dart';
-import 'tabItem.dart';
+import 'package:floower/pages/authentication/signin.dart';
+import 'package:floower/pages/floowerControlPage.dart';
+import 'package:floower/pages/profilePage.dart';
+import 'classes/tabItem.dart';
 
 var languages = [
   'English - United Kingdom',
@@ -186,7 +187,7 @@ class _ScreenPickerState extends State<ScreenPicker> {
                 isAppBarVisible.sink.add(true);
                 return FloowerControlPage();
               case 1:
-                isAppBarVisible.sink.add(false);
+                isAppBarVisible.sink.add(true);
                 return SigninPage();
               case 2:
                 return null;
@@ -203,15 +204,40 @@ class _ScreenPickerState extends State<ScreenPicker> {
         });
   }
 
+  bottomSheet() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.2,
+      color: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: new BorderRadius.only(
+                topLeft: const Radius.circular(20.0),
+                topRight: const Radius.circular(20.0))),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                tr('choosePhoto'),
+                style: TextStyle(fontSize: 20.0, color: Colors.black),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+            ]),
+      ),
+    );
+  }
+
   _buildBottomTab() {
     return StreamBuilder(
         stream: isAppBarVisible.stream,
-        initialData: 100,
+        initialData: 1000,
         builder: (context, snapshot) {
-          if (_selectedPosition != 100) {
+          if (snapshot.data != 0 &&
+              _selectedPosition != 100 &&
+              _selectedPosition != 1000) {
             return BottomAppBar(
-              color: Color(0xff04c2a9),
-              shape: CircularNotchedRectangle(),
+              color: Colors.cyan,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
@@ -228,15 +254,14 @@ class _ScreenPickerState extends State<ScreenPicker> {
                       });
                     },
                   ),
-                  TabItem(
-                    iconData: IconData(0xe900, fontFamily: 'flower'),
+                  TabItemIcon(
+                    icon: FaIcon(FontAwesomeIcons.userFriends,
+                        color: _selectedPosition == 1
+                            ? Colors.white
+                            : Colors.white54),
                     isSelected: _selectedPosition == 1,
                     onTap: () {
                       setState(() {
-                        print('height: ' +
-                            MediaQuery.of(context).size.height.toString());
-                        print('width: ' +
-                            MediaQuery.of(context).size.width.toString());
                         _setSelectedPosition(1);
                       });
                     },
@@ -250,13 +275,22 @@ class _ScreenPickerState extends State<ScreenPicker> {
                       });
                     },
                   ),
-                  TabItem(
-                    iconData: Icons.person,
+                  TabItemIcon(
+                    icon: FaIcon(FontAwesomeIcons.solidUserCircle,
+                        color: _selectedPosition == 3
+                            ? Colors.white
+                            : Colors.white54),
                     isSelected: _selectedPosition == 3,
                     onTap: () {
                       setState(() {
                         _setSelectedPosition(3);
                       });
+                    },
+                    onLongPress: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: ((builder) => bottomSheet()),
+                      );
                     },
                   ),
                 ],
